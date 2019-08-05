@@ -36,4 +36,4 @@ steps:
             - "/var/run/docker.sock:/var/run/docker.sock"
             - "/var/lib/buildkite-agent/.docker/config.json:/home/builder/.docker/config.json"
           environment:
-            - GITHUB_TOKEN_OUTDATED
+            - GITHUB_TOKEN_REPLICATEDBOT
