@@ -34,34 +34,9 @@ func (c SemverTagCollection) Less(i, j int) bool {
 }
 
 func compareVersions(verI *semver.Version, verJ *semver.Version) int {
-	splitI := strings.Split(verI.Original(), ".")
-	splitJ := strings.Split(verJ.Original(), ".")
-
-	iSegments := verI.Segments()
-	jSegments := verJ.Segments()
-
-	for idx := range splitI {
-		if idx <= len(splitJ)-1 {
-			splitIPartInt := iSegments[idx]
-			splitJPartInt := jSegments[idx]
-
-			if splitIPartInt != splitJPartInt {
-				if splitIPartInt > splitJPartInt {
-					return 1
-				}
-				if splitIPartInt < splitJPartInt {
-					return -1
-				}
-			}
-		} else {
-			return -1
-		}
-	}
-
-	if len(splitI) > len(splitJ) {
+	if verI.LessThan(verJ) {
 		return -1
-	}
-	if len(splitI) < len(splitJ) {
+	} else if verI.GreaterThan(verJ) {
 		return 1
 	}
 
@@ -75,15 +50,21 @@ func (c SemverTagCollection) Swap(i, j int) {
 func (c SemverTagCollection) VersionsBehind(currentVersion *semver.Version) ([]*semver.Version, error) {
 	cleaned, err := c.Unique()
 	if err != nil {
-		return []*semver.Version{}, errors.Wrap(err, "deduplicate versions")
+		return []*semver.Version{}, errors.Wrap(err, "failed to deduplicate versions")
 	}
 
-	for idx := range cleaned {
-		if compareVersions(cleaned[idx], currentVersion) == 0 {
-			return cleaned[idx:], nil
+	sortable := SemverTagCollection(cleaned)
+	sort.Sort(sortable)
+
+	for idx := range sortable {
+		if sortable[idx].Original() == currentVersion.Original() {
+			return sortable[idx:], nil
 		}
 	}
-	return []*semver.Version{}, errors.New("no matching version found")
+
+	return []*semver.Version{
+		currentVersion,
+	}, nil // /shrug
 }
 
 // Unique will create a new sorted slice with the same versions that have different tags removed.
@@ -135,6 +116,10 @@ func (c SemverTagCollection) Unique() ([]*semver.Version, error) {
 
 // RemoveLeastSpecific given a sorted collection will remove the least specific version
 func (c SemverTagCollection) RemoveLeastSpecific() []*semver.Version {
+	if c.Len() == 0 {
+		return []*semver.Version{}
+	}
+
 	cleanedVersions := []*semver.Version{c[0]}
 	for i := 0; i < len(c)-1; i++ {
 		j := i + 1

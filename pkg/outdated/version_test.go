@@ -179,7 +179,7 @@ func TestCompareVersions(t *testing.T) {
 		{
 			name:     "minor versions is less than",
 			versions: []string{"10.1", "10"},
-			expect:   -1,
+			expect:   1,
 		},
 		{
 			name:     "minor versions is greater than",
@@ -209,7 +209,7 @@ func TestCompareVersions(t *testing.T) {
 		{
 			name:     "major version only with patch",
 			versions: []string{"10", "10.1.2"},
-			expect:   1,
+			expect:   -1,
 		},
 		{
 			name:     "minor version greater, patch version less",
@@ -225,6 +225,11 @@ func TestCompareVersions(t *testing.T) {
 			name:     "major version less, also shorter",
 			versions: []string{"9.1", "10.2.2"},
 			expect:   -1,
+		},
+		{
+			name:     "minor with patches",
+			versions: []string{"v3.0.4-beta.0", "v3.0.4-alpha.1"},
+			expect:   1,
 		},
 	}
 
@@ -307,6 +312,11 @@ func TestRemoveLeastSpecific(t *testing.T) {
 			versions:       []string{"3.5.1.1", "3.5.1", "4.5.1"},
 			expectVersions: []string{"3.5.1.1", "4.5.1"},
 		},
+		{
+			name:           "opa style",
+			versions:       []string{"v3.0.4-beta.0", "v3.0.4-beta.1"},
+			expectVersions: []string{"v3.0.4-beta.0", "v3.0.4-beta.1"},
+		},
 	}
 
 	for _, test := range tests {
@@ -322,19 +332,42 @@ func TestRemoveLeastSpecific(t *testing.T) {
 }
 
 func TestResolveTagDates(t *testing.T) {
-	hostname := "index.docker.io"
-	imageName := "library/postgres"
-	versions := []string{"10.0", "10.1", "10.2"}
-	allVersions := makeVersions(versions)
+	tests := []struct {
+		name      string
+		hostname  string
+		imageName string
+		versions  []string
+	}{
+		{
+			name:      "postgres",
+			hostname:  "index.docker.io",
+			imageName: "library/postgres",
+			versions:  []string{"10.0", "10.1", "10.2"},
+		},
+		{
+			name:      "tiller",
+			hostname:  "gcr.io",
+			imageName: "kubernetes-helm/tiller",
+			versions:  []string{"v2.14.1"},
+		},
+	}
 
-	reg, err := initRegistryClient(hostname)
-	require.NoError(t, err)
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			req := require.New(t)
 
-	versionTags, err := resolveTagDates(reg, imageName, allVersions)
-	require.NoError(t, err)
+			allVersions := makeVersions(test.versions)
 
-	for _, versionTag := range versionTags {
-		_, err = time.Parse(time.RFC3339, versionTag.Date)
-		require.NoError(t, err)
+			reg, err := initRegistryClient(test.hostname)
+			req.NoError(err)
+
+			versionTags, err := resolveTagDates(reg, test.imageName, allVersions)
+			req.NoError(err)
+
+			for _, versionTag := range versionTags {
+				_, err = time.Parse(time.RFC3339, versionTag.Date)
+				req.NoError(err)
+			}
+		})
 	}
 }

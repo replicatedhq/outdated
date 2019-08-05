@@ -49,6 +49,7 @@ func (o Outdated) ParseImage(image string, pullableImage string) (*CheckResult, 
 		return o.parseNonSemverImage(reg, imageName, tag, nonSemverTags)
 	}
 
+	// From here on, we can assume that we are on a semver tag
 	semverTags = append(semverTags, detectedSemver)
 	collection := SemverTagCollection(semverTags)
 
@@ -57,6 +58,7 @@ func (o Outdated) ParseImage(image string, pullableImage string) (*CheckResult, 
 		return nil, errors.Wrap(err, "failed to calculate versions behind")
 	}
 	trueVersionsBehind := SemverTagCollection(versionsBehind).RemoveLeastSpecific()
+
 	behind := len(trueVersionsBehind) - 1
 
 	checkResult := CheckResult{

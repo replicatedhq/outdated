@@ -5,11 +5,13 @@ import (
 	"os"
 	"path"
 	"strings"
+	"time"
 
 	"github.com/replicatedhq/outdated/pkg/logger"
 	"github.com/replicatedhq/outdated/pkg/outdated"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"github.com/tj/go-spin"
 )
 
 func RootCmd() *cobra.Command {
@@ -29,16 +31,40 @@ func RootCmd() *cobra.Command {
 
 			o := outdated.Outdated{}
 
-			log.Info("Finding images in cluster")
-			images, err := o.ListImages(v.GetString("kubeconfig"))
+			s := spin.New()
+			finishedCh := make(chan bool, 1)
+			foundImageName := make(chan string, 1)
+			go func() {
+				lastImageName := ""
+				for {
+					select {
+					case <-finishedCh:
+						fmt.Printf("\r")
+						return
+					case i := <-foundImageName:
+						lastImageName = i
+					case <-time.After(time.Millisecond * 100):
+						if lastImageName == "" {
+							fmt.Printf("\r  \033[36mSearching for images\033[m %s", s.Next())
+						} else {
+							fmt.Printf("\r  \033[36mSearching for images\033[m %s (%s)", s.Next(), lastImageName)
+						}
+					}
+				}
+			}()
+			defer func() {
+				finishedCh <- true
+			}()
+
+			images, err := o.ListImages(v.GetString("kubeconfig"), foundImageName)
 			if err != nil {
 				log.Error(err)
 				log.Info("")
 				os.Exit(1)
 				return nil
 			}
+			finishedCh <- true
 
-			log.Info("")
 			head, imageColumnWidth, tagColumnWidth := headerLine(images)
 			log.Header(head)
 
@@ -58,6 +84,9 @@ func RootCmd() *cobra.Command {
 					log.FinalizeImageLineWithError(erroredImage(image, checkResult, imageColumnWidth, tagColumnWidth))
 				}
 			}
+
+			log.Info("")
+
 			return nil
 		},
 	}
