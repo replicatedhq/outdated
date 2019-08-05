@@ -17,7 +17,8 @@ func initRegistryClient(hostname string) (*registry.Registry, error) {
 	}
 
 	reg, err := registry.New(auth, registry.Opt{
-		Timeout: time.Duration(time.Second * 5),
+		SkipPing: true,
+		Timeout:  time.Duration(time.Second * 5),
 	})
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create registry client")

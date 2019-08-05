@@ -4,7 +4,7 @@ go 1.12
 
 require (
 	github.com/Masterminds/goutils v1.1.0 // indirect
-	github.com/Masterminds/semver v1.4.2 // indirect
+	github.com/Masterminds/semver v1.4.2
 	github.com/Masterminds/sprig v2.20.0+incompatible // indirect
 	github.com/andrewchambers/go-jqpipe v0.0.0-20180509223707-2d54cef8cd94 // indirect
 	github.com/blang/semver v3.5.1+incompatible

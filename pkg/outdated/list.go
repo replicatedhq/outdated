@@ -1,6 +1,7 @@
 package outdated
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/pkg/errors"
@@ -18,7 +19,7 @@ type RunningImage struct {
 	PullableImage string
 }
 
-func (o Outdated) ListImages(kubeconfigPath string) ([]RunningImage, error) {
+func (o Outdated) ListImages(kubeconfigPath string, imageNameCh chan string) ([]RunningImage, error) {
 	config, err := clientcmd.BuildConfigFromFlags("", kubeconfigPath)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to read kubeconfig")
@@ -36,6 +37,8 @@ func (o Outdated) ListImages(kubeconfigPath string) ([]RunningImage, error) {
 
 	runningImages := []RunningImage{}
 	for _, namespace := range namespaces.Items {
+		imageNameCh <- fmt.Sprintf("%s/", namespace.Name)
+
 		pods, err := clientset.CoreV1().Pods(namespace.Name).List(metav1.ListOptions{})
 		if err != nil {
 			return nil, errors.Wrap(err, "failed to list pods")
@@ -55,6 +58,7 @@ func (o Outdated) ListImages(kubeconfigPath string) ([]RunningImage, error) {
 					PullableImage: pullable,
 				}
 
+				imageNameCh <- fmt.Sprintf("%s/%s", namespace.Name, runningImage.Image)
 				runningImages = append(runningImages, runningImage)
 			}
 
@@ -71,6 +75,7 @@ func (o Outdated) ListImages(kubeconfigPath string) ([]RunningImage, error) {
 					PullableImage: pullable,
 				}
 
+				imageNameCh <- fmt.Sprintf("%s/%s", namespace.Name, runningImage.Image)
 				runningImages = append(runningImages, runningImage)
 			}
 		}
