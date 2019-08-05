@@ -15,4 +15,4 @@ The output is a list of all images, with the most out-of-date images in red, sli
 
 ### Example
 
-[![kuebct; ourdated example](https://asciinema.org/a/ExaFOk6ap0GL17GJsJWpExGnM.svg)](https://asciinema.org/a/ExaFOk6ap0GL17GJsJWpExGnM)
+<script id="asciicast-ExaFOk6ap0GL17GJsJWpExGnM" src="https://asciinema.org/a/ExaFOk6ap0GL17GJsJWpExGnM.js" async></script>
