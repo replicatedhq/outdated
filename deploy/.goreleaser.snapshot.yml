@@ -5,7 +5,7 @@ release:
     name: outdated
 builds:
   - id: outdated
-  - goos:
+    goos:
     - linux
     - windows
     - darwin
