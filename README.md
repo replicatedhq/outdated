@@ -15,4 +15,4 @@ The output is a list of all images, with the most out-of-date images in red, sli
 
 ### Example
 
-[![kubectl outdated example](https://asciinema.org/a/ExaFOk6ap0GL17GJsJWpExGnM.png)](https://asciinema.org/a/ExaFOk6ap0GL17GJsJWpExGnM)
+[![kubectl outdated](https://asciinema.org/a/262261.svg)](https://asciinema.org/a/262261)
