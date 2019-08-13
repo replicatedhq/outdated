@@ -155,6 +155,10 @@ func erroredImage(image outdated.RunningImage, checkResult *outdated.CheckResult
 		tagColumnSpacer = fmt.Sprintf("%s ", tagColumnSpacer)
 	}
 
-	return fmt.Sprintf("%s%s%s%s%s", truncatedImageName, imageColumnSpacer, truncatedTagName, tagColumnSpacer, checkResult.CheckError)
+	message := "Unable to get image data"
+	if checkResult != nil {
+		message = checkResult.CheckError
+	}
+	return fmt.Sprintf("%s%s%s%s%s", truncatedImageName, imageColumnSpacer, truncatedTagName, tagColumnSpacer, message)
 
 }

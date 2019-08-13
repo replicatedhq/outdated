@@ -56,7 +56,7 @@ func RootCmd() *cobra.Command {
 				finishedCh <- true
 			}()
 
-			images, err := o.ListImages(v.GetString("kubeconfig"), foundImageName)
+			images, err := o.ListImages(v.GetString("kubeconfig"), foundImageName, v.GetStringSlice("ignore-ns"))
 			if err != nil {
 				log.Error(err)
 				log.Info("")
@@ -72,16 +72,13 @@ func RootCmd() *cobra.Command {
 				log.StartImageLine(runningImage(image, imageColumnWidth, tagColumnWidth))
 				checkResult, err := o.ParseImage(image.Image, image.PullableImage)
 				if err != nil {
-					log.Error(err)
-					log.Info("")
-					os.Exit(1)
-					return nil
-				}
-
-				if checkResult.VersionsBehind != -1 {
-					log.FinalizeImageLine(checkResult.VersionsBehind, completedImage(image, checkResult, imageColumnWidth, tagColumnWidth))
-				} else {
 					log.FinalizeImageLineWithError(erroredImage(image, checkResult, imageColumnWidth, tagColumnWidth))
+				} else {
+					if checkResult.VersionsBehind != -1 {
+						log.FinalizeImageLine(checkResult.VersionsBehind, completedImage(image, checkResult, imageColumnWidth, tagColumnWidth))
+					} else {
+						log.FinalizeImageLineWithError(erroredImage(image, checkResult, imageColumnWidth, tagColumnWidth))
+					}
 				}
 			}
 
@@ -94,7 +91,7 @@ func RootCmd() *cobra.Command {
 	cobra.OnInitialize(initConfig)
 
 	cmd.Flags().String("kubeconfig", path.Join(homeDir(), ".kube", "config"), "path to the kubeconfig to use")
-
+	cmd.Flags().StringSlice("ignore-ns", []string{}, "optional list of namespaces to exclude from searching")
 	viper.SetEnvKeyReplacer(strings.NewReplacer("-", "_"))
 	return cmd
 }

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/minio/minio/pkg/wildcard"
 	"github.com/pkg/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
@@ -19,7 +20,7 @@ type RunningImage struct {
 	PullableImage string
 }
 
-func (o Outdated) ListImages(kubeconfigPath string, imageNameCh chan string) ([]RunningImage, error) {
+func (o Outdated) ListImages(kubeconfigPath string, imageNameCh chan string, ignoreNs []string) ([]RunningImage, error) {
 	config, err := clientcmd.BuildConfigFromFlags("", kubeconfigPath)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to read kubeconfig")
@@ -37,6 +38,10 @@ func (o Outdated) ListImages(kubeconfigPath string, imageNameCh chan string) ([]
 
 	runningImages := []RunningImage{}
 	for _, namespace := range namespaces.Items {
+		if isNamespaceExcluded(namespace.Name, ignoreNs) {
+			continue
+		}
+
 		imageNameCh <- fmt.Sprintf("%s/", namespace.Name)
 
 		pods, err := clientset.CoreV1().Pods(namespace.Name).List(metav1.ListOptions{})
@@ -95,4 +100,14 @@ func (o Outdated) ListImages(kubeconfigPath string, imageNameCh chan string) ([]
 	}
 
 	return cleanedImages, nil
+}
+
+func isNamespaceExcluded(namespace string, excluded []string) bool {
+	for _, ex := range excluded {
+		if wildcard.Match(ex, namespace) {
+			return true
+		}
+	}
+
+	return false
 }
