@@ -2,7 +2,6 @@ package outdated
 
 import (
 	"encoding/json"
-	"fmt"
 	"sort"
 	"strconv"
 	"strings"
@@ -163,9 +162,7 @@ func resolveTagDates(reg *registry.Registry, imageName string, sortedVersions []
 
 		go func(versionFromTag string) {
 			date, err := getTagDate(reg, imageName, versionFromTag)
-			if err != nil {
-				fmt.Printf("unable to get date for tag %#v, %#v", versionFromTag, err)
-			} else {
+			if err == nil {
 				versionTag.Date = date
 			}
 
