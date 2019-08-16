@@ -56,7 +56,7 @@ func RootCmd() *cobra.Command {
 				finishedCh <- true
 			}()
 
-			images, err := o.ListImages(v.GetString("kubeconfig"), foundImageName, v.GetStringSlice("ignore-ns"))
+			images, err := o.ListImages(v.GetString("kubeconfig"), v.GetString("kubecontext"), foundImageName, v.GetStringSlice("ignore-ns"))
 			if err != nil {
 				log.Error(err)
 				log.Info("")
@@ -91,6 +91,7 @@ func RootCmd() *cobra.Command {
 	cobra.OnInitialize(initConfig)
 
 	cmd.Flags().String("kubeconfig", path.Join(homeDir(), ".kube", "config"), "path to the kubeconfig to use")
+	cmd.Flags().String("kubecontext", "", "kubecontext to use (defaults to the current context)")
 	cmd.Flags().StringSlice("ignore-ns", []string{}, "optional list of namespaces to exclude from searching")
 	viper.SetEnvKeyReplacer(strings.NewReplacer("-", "_"))
 	return cmd
