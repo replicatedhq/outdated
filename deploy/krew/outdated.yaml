@@ -3,14 +3,14 @@ kind: Plugin
 metadata:
   name: outdated
 spec:
-  version: "v0.2.1"
+  version: "v0.3.0"
   platforms:
   - selector:
       matchLabels:
         os: linux
         arch: amd64
-    uri: https://github.com/replicatedhq/outdated/releases/download/v0.2.1/outdated_0.2.1_linux_amd64-0.2.1.tar.gz
-    sha256: "7db25869cfc57dda938add04c088c070097fc83ecd7a27a12157da0e0d728864"
+    uri: https://github.com/replicatedhq/outdated/releases/download/v0.3.0/outdated_0.3.0_linux_amd64-0.3.0.tar.gz
+    sha256: "6d11b1dca5982279700dbdb0b77f797e34292c0fd6d6eadd9cc393753cff175d"
     files:
     - from: "./outdated"
       to: "."
@@ -19,8 +19,8 @@ spec:
       matchLabels:
         os: darwin
         arch: amd64
-    uri: https://github.com/replicatedhq/outdated/releases/download/v0.2.1/outdated_0.2.1_darwin_amd64-0.2.1.tar.gz
-    sha256: "6563b39093eb4e86647b451c55e8739cfe9165c5da846a29a4e7bd9ee44337dd"
+    uri: https://github.com/replicatedhq/outdated/releases/download/v0.3.0/outdated_0.3.0_darwin_amd64-0.3.0.tar.gz
+    sha256: "65d5936d7de80a99b2cc0eddbbbe8bb1d48bd938ac0d3e6d50bcb6508c506374"
     files:
     - from: "./outdated"
       to: "."
@@ -29,8 +29,8 @@ spec:
       matchLabels:
         os: windows
         arch: amd64
-    uri: https://github.com/replicatedhq/outdated/releases/download/v0.2.1/outdated_0.2.1_windows_amd64-0.2.1.zip
-    sha256: "662c1c51da8cb04148964ca83b16568204496cedde250cae0b943ef5890dd570"
+    uri: https://github.com/replicatedhq/outdated/releases/download/v0.3.0/outdated_0.3.0_windows_amd64-0.3.0.zip
+    sha256: "1dd2a7342839a472552a33c9992793d21fc21aae1f59a3ef0382a642981f7624"
     files:
     - from: "/outdated.exe"
       to: "."
@@ -43,7 +43,7 @@ spec:
 
     For additional options:
       $ kubectl outdated --help
-      or https://github.com/replicatedhq/outdated/blob/v0.2.0/doc/USAGE.md
+      or https://github.com/replicatedhq/outdated/blob/v0.3.0/doc/USAGE.md
 
   description: |
     The plugin will scan for all pods in all namespaces that you have at least

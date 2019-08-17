@@ -3,7 +3,6 @@ package cli
 import (
 	"fmt"
 	"os"
-	"path"
 	"strings"
 	"time"
 
@@ -12,6 +11,11 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/tj/go-spin"
+	"k8s.io/cli-runtime/pkg/genericclioptions"
+)
+
+var (
+	KubernetesConfigFlags *genericclioptions.ConfigFlags
 )
 
 func RootCmd() *cobra.Command {
@@ -56,7 +60,7 @@ func RootCmd() *cobra.Command {
 				finishedCh <- true
 			}()
 
-			images, err := o.ListImages(v.GetString("kubeconfig"), v.GetString("kubecontext"), foundImageName, v.GetStringSlice("ignore-ns"))
+			images, err := o.ListImages(KubernetesConfigFlags, foundImageName, v.GetStringSlice("ignore-ns"))
 			if err != nil {
 				log.Error(err)
 				log.Info("")
@@ -90,8 +94,9 @@ func RootCmd() *cobra.Command {
 
 	cobra.OnInitialize(initConfig)
 
-	cmd.Flags().String("kubeconfig", path.Join(homeDir(), ".kube", "config"), "path to the kubeconfig to use")
-	cmd.Flags().String("kubecontext", "", "kubecontext to use (defaults to the current context)")
+	KubernetesConfigFlags = genericclioptions.NewConfigFlags(false)
+	KubernetesConfigFlags.AddFlags(cmd.Flags())
+
 	cmd.Flags().StringSlice("ignore-ns", []string{}, "optional list of namespaces to exclude from searching")
 	viper.SetEnvKeyReplacer(strings.NewReplacer("-", "_"))
 	return cmd
