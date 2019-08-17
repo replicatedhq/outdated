@@ -16,7 +16,7 @@ kubectl outdated
 ### Scan images in another kubecontext
 
 ```shell
-kubectl outdated --kubecconfig=/path/to/kubeconfig
+kubectl outdated --context=context-name
 ```
 
 ## How it works

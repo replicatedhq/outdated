@@ -7,9 +7,8 @@ import (
 	"github.com/minio/minio/pkg/wildcard"
 	"github.com/pkg/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/cli-runtime/pkg/genericclioptions"
 	"k8s.io/client-go/kubernetes"
-	"k8s.io/client-go/rest"
-	"k8s.io/client-go/tools/clientcmd"
 )
 
 type RunningImage struct {
@@ -21,26 +20,10 @@ type RunningImage struct {
 	PullableImage string
 }
 
-func (o Outdated) ListImages(kubeconfigPath string, kubeContext string, imageNameCh chan string, ignoreNs []string) ([]RunningImage, error) {
-	var config *rest.Config
-
-	if kubeContext == "" {
-		defaultConfig, err := clientcmd.BuildConfigFromFlags("", kubeconfigPath)
-		if err != nil {
-			return nil, errors.Wrap(err, "failed to read kubeconfig")
-		}
-		config = defaultConfig
-	} else {
-		configLoader := clientcmd.NewNonInteractiveDeferredLoadingClientConfig(
-			&clientcmd.ClientConfigLoadingRules{ExplicitPath: kubeconfigPath},
-			&clientcmd.ConfigOverrides{
-				CurrentContext: kubeContext,
-			})
-		contextConfig, err := configLoader.ClientConfig()
-		if err != nil {
-			return nil, errors.Wrap(err, "failed to read context kubeconfig")
-		}
-		config = contextConfig
+func (o Outdated) ListImages(configFlags *genericclioptions.ConfigFlags, imageNameCh chan string, ignoreNs []string) ([]RunningImage, error) {
+	config, err := configFlags.ToRESTConfig()
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to read kubeconfig")
 	}
 
 	clientset, err := kubernetes.NewForConfig(config)
