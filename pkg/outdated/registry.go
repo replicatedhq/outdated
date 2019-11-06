@@ -10,6 +10,10 @@ import (
 )
 
 func initRegistryClient(hostname string) (*registry.Registry, error) {
+	if hostname == "docker.io" {
+		hostname = "index.docker.io"
+	}
+
 	auth := types.AuthConfig{
 		Username:      "",
 		Password:      "",
@@ -30,7 +34,7 @@ func initRegistryClient(hostname string) (*registry.Registry, error) {
 func fetchTags(reg *registry.Registry, imageName string) ([]string, error) {
 	tags, err := reg.Tags(imageName)
 	if err != nil {
-		return nil, errors.Wrap(err, "list tags")
+		return nil, errors.Wrap(err, "failed to list tags")
 	}
 
 	return tags, nil

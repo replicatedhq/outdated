@@ -19,8 +19,7 @@ func (l *Logger) Info(msg string, args ...interface{}) {
 		return
 	}
 
-	c := color.New(color.FgHiCyan)
-	c.Println(fmt.Sprintf(msg, args...))
+	fmt.Println(fmt.Sprintf(msg, args...))
 }
 
 func (l *Logger) Error(err error) {
@@ -29,8 +28,7 @@ func (l *Logger) Error(err error) {
 }
 
 func (l *Logger) Header(msg string, args ...interface{}) {
-	c := color.New(color.FgHiWhite)
-	c.Println(fmt.Sprintf(msg, args...))
+	fmt.Println(fmt.Sprintf(msg, args...))
 }
 
 func (l *Logger) StartImageLine(msg string, args ...interface{}) {
