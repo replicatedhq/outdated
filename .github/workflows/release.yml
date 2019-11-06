@@ -13,4 +13,6 @@ jobs:
     - uses: actions/checkout@v1
     - name: Create a release
       run: make release
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
