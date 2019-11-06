@@ -58,8 +58,10 @@ func initRegistryClient(hostname string) (*registry.Registry, error) {
 				}
 
 				usernameAndPassword := strings.Split(string(decoded), ":")
-				username = usernameAndPassword[0]
-				password = usernameAndPassword[1]
+				if len(usernameAndPassword) == 2 {
+					username = usernameAndPassword[0]
+					password = usernameAndPassword[1]
+				}
 			}
 		}
 	}
