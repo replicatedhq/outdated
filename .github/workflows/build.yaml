@@ -1,0 +1,19 @@
+name: build-and-test
+
+on: 
+  push:
+    branches-ignore:
+      - master
+    tags-ignore:
+      - "*"
+  
+jobs:
+  build-and-test:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Build and test
+      run: make
+
