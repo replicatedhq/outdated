@@ -1,0 +1,17 @@
+name: snapshot-release
+
+on:
+  push:
+    branches:
+      - github-action
+  
+jobs:
+  create-snapshot-release:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Create a snapshot release
+      run: make snapshot-release
+
