@@ -5,7 +5,7 @@ A `kubectl` plugin to show out-of-date images running in a cluster.
 ## Quick Start
 
 ```
-kubectl krew install outdated
+curl https://krew.sh/outdated | bash
 kubectl outdated
 ```
 
