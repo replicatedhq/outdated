@@ -44,8 +44,75 @@ func Test_SplitStringOnLen(t *testing.T) {
 				"2.0.0",
 				"4.0.1",
 			},
-			expectedOutliers: []string{
+			expectedOutliers: []string{},
+			expectedRemaining: []string{
+				"0.0.1",
+				"1.0.0",
+				"2.0.0",
 				"4.0.1",
+			},
+		},
+		{
+
+			name: "just barely an outlier",
+			allSemverTags: []string{
+				"0.0.1",
+				"1.0.0",
+				"2.0.0",
+				"3.0.1",
+				"5.0.0-beta",
+				"8.0.0",
+			},
+			expectedOutliers: []string{
+				"8.0.0",
+			},
+			expectedRemaining: []string{
+				"0.0.1",
+				"1.0.0",
+				"2.0.0",
+				"3.0.1",
+				"5.0.0-beta",
+			},
+		},
+		{
+			name: "multiple spread outliers",
+			allSemverTags: []string{
+				"0.0.1",
+				"1.0.0",
+				"2.0.0",
+				"4.0.1",
+				"7.0.0",
+				"11.0.0",
+			},
+			expectedOutliers: []string{
+				"7.0.0",
+				"11.0.0",
+			},
+			expectedRemaining: []string{
+				"0.0.1",
+				"1.0.0",
+				"2.0.0",
+				"4.0.1",
+			},
+		},
+		{
+			name: "multiple ranges",
+			allSemverTags: []string{
+				"0.0.1",
+				"1.0.0",
+				"2.0.0",
+				"7.0.1",
+				"7.0.2",
+				"7.0.3",
+				"11.0.0",
+				"12.0-beta",
+			},
+			expectedOutliers: []string{
+				"7.0.1",
+				"7.0.2",
+				"7.0.3",
+				"11.0.0",
+				"12.0-beta",
 			},
 			expectedRemaining: []string{
 				"0.0.1",

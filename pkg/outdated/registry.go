@@ -19,8 +19,8 @@ import (
 const (
 	// SemverOutlierMajorVersionThreshold defines the number of major versions that must be skipped before
 	// the next version is considered an outlier
-	// setting this to 1 allows NO major versions to be skipped
-	SemverOutlierMajorVersionThreshold = 1
+	// setting this to 2 allows only 1 major version to be skipped
+	SemverOutlierMajorVersionThreshold = 2
 )
 
 type DockerConfig struct {
