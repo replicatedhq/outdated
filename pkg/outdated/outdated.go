@@ -42,7 +42,10 @@ func (o Outdated) ParseImage(image string, pullableImage string) (*CheckResult, 
 		return nil, errors.Wrap(err, "failed to fetch image tags")
 	}
 
-	semverTags, nonSemverTags := parseTags(tags)
+	semverTags, nonSemverTags, err := parseTags(tags)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to parse tags")
+	}
 
 	detectedSemver, err := semver.NewVersion(tag)
 	if err != nil {
