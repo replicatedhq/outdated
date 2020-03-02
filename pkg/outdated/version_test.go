@@ -316,7 +316,7 @@ func TestRemoveLeastSpecific(t *testing.T) {
 			tags := collection.RemoveLeastSpecific()
 
 			originalRemoved := makeOriginal(tags)
-			require.Equal(t, test.expectVersions, originalRemoved)
+			require.EqualValues(t, test.expectVersions, originalRemoved)
 		})
 	}
 }
