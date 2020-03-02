@@ -17,4 +17,5 @@ jobs:
         with:
           version: latest
           args: release --rm-dist --config deploy/.goreleaser.yaml
-
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
