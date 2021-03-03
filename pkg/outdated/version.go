@@ -1,6 +1,7 @@
 package outdated
 
 import (
+	"context"
 	"encoding/json"
 	"sort"
 	"strconv"
@@ -180,7 +181,7 @@ func resolveTagDates(reg *registry.Registry, imageName string, sortedVersions []
 }
 
 func getTagDate(reg *registry.Registry, imageName string, versionFromTag string) (string, error) {
-	manifest, err := reg.ManifestV1(imageName, versionFromTag)
+	manifest, err := reg.ManifestV1(context.TODO(), imageName, versionFromTag)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to get manifest from image")
 	}
