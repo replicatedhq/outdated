@@ -93,11 +93,6 @@ func TestTagCollectionUnique(t *testing.T) {
 			versions:       []string{"10", "11"},
 			expectVersions: []string{"10", "11"},
 		},
-		{
-			name:           "less specific patch version",
-			versions:       []string{"0.1.0", "0.1"},
-			expectVersions: []string{"0.1.0", "0.1"},
-		},
 	}
 
 	for _, test := range tests {
