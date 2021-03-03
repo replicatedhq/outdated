@@ -2,12 +2,13 @@ name: build-and-test
 
 on:
   push:
+    branches:
+      - "**"
     tags-ignore:
       - "*"
 
 jobs:
   build-and-test:
-
     runs-on: ubuntu-latest
 
     steps:
