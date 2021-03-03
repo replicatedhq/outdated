@@ -1,6 +1,7 @@
 package outdated
 
 import (
+	"context"
 	"encoding/base64"
 	"encoding/json"
 	"io/ioutil"
@@ -80,7 +81,7 @@ func initRegistryClient(hostname string) (*registry.Registry, error) {
 		ServerAddress: hostname,
 	}
 
-	reg, err := registry.New(auth, registry.Opt{
+	reg, err := registry.New(context.TODO(), auth, registry.Opt{
 		SkipPing: true,
 		Timeout:  time.Duration(time.Second * 5),
 	})
@@ -92,7 +93,7 @@ func initRegistryClient(hostname string) (*registry.Registry, error) {
 }
 
 func fetchTags(reg *registry.Registry, imageName string) ([]string, error) {
-	tags, err := reg.Tags(imageName)
+	tags, err := reg.Tags(context.TODO(), imageName)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to list tags")
 	}
