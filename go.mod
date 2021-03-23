@@ -9,6 +9,7 @@ require (
 	github.com/genuinetools/reg v0.16.1
 	github.com/google/gofuzz v1.0.0 // indirect
 	github.com/googleapis/gnostic v0.3.1 // indirect
+	github.com/gophercloud/gophercloud v0.16.0 // indirect
 	github.com/hashicorp/go-version v1.1.0
 	github.com/imdario/mergo v0.3.7 // indirect
 	github.com/minio/minio v0.0.0-20190813204106-bf9b619d8656
@@ -19,7 +20,6 @@ require (
 	github.com/stretchr/testify v1.3.0
 	github.com/tj/go-spin v1.1.0
 	golang.org/x/net v0.0.0-20190812203447-cdfb69ac37fc // indirect
-	golang.org/x/sys v0.0.0-20191026070338-33540a1f6037 // indirect
 	k8s.io/api v0.0.0-20190313235455-40a48860b5ab // indirect
 	k8s.io/apimachinery v0.0.0-20190313205120-d7deff9243b1
 	k8s.io/cli-runtime v0.0.0-20190314001948-2899ed30580f
