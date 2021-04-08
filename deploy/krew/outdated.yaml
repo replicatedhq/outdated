@@ -16,11 +16,32 @@ spec:
     - from: LICENSE
       to: .
     bin: outdated
+      matchLabels:
+        os: linux
+        arch: arm64
+    {{addURIAndSha "https://github.com/replicatedhq/outdated/releases/download/{{ .TagName }}/outdated_linux_arm64.tar.gz" .TagName }}
+    files:
+    - from: outdated
+      to: .
+    - from: LICENSE
+      to: .
+    bin: outdated
   - selector:
       matchLabels:
         os: darwin
         arch: amd64
     {{addURIAndSha "https://github.com/replicatedhq/outdated/releases/download/{{ .TagName }}/outdated_darwin_amd64.tar.gz" .TagName }}
+    files:
+    - from: outdated
+      to: .
+    - from: LICENSE
+      to: .
+    bin: outdated
+  - selector:
+      matchLabels:
+        os: darwin
+        arch: arm64
+    {{addURIAndSha "https://github.com/replicatedhq/outdated/releases/download/{{ .TagName }}/outdated_darwin_arm64.tar.gz" .TagName }}
     files:
     - from: outdated
       to: .
