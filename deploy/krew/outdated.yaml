@@ -16,6 +16,7 @@ spec:
     - from: LICENSE
       to: .
     bin: outdated
+  - selector:
       matchLabels:
         os: linux
         arch: arm64
