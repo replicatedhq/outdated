@@ -11,6 +11,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0 # fetch full history for goreleaser changelog
 
       - uses: actions/setup-go@v2.1.3
         with:
