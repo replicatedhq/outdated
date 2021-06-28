@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 	"strings"
@@ -31,7 +32,6 @@ func RootCmd() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			v := viper.GetViper()
 			log := logger.NewLogger()
-			log.Info("")
 
 			o := outdated.Outdated{}
 
@@ -69,26 +69,14 @@ func RootCmd() *cobra.Command {
 			}
 			finishedCh <- true
 
-			head, imageColumnWidth, tagColumnWidth := headerLine(images)
-			log.Header(head)
-
-			for _, image := range images {
-				log.StartImageLine(runningImage(image, imageColumnWidth, tagColumnWidth))
-				checkResult, err := o.ParseImage(image.Image, image.PullableImage)
-				if err != nil {
-					log.FinalizeImageLineWithError(erroredImage(image, checkResult, imageColumnWidth, tagColumnWidth))
-				} else {
-					if checkResult.VersionsBehind != -1 {
-						log.FinalizeImageLine(checkResult.VersionsBehind, completedImage(image, checkResult, imageColumnWidth, tagColumnWidth))
-					} else {
-						log.FinalizeImageLineWithError(erroredImage(image, checkResult, imageColumnWidth, tagColumnWidth))
-					}
-				}
+			switch output := v.GetString("output"); output {
+			case "text":
+				return printInText(log, o, images)
+			case "json":
+				return printInJSON(log, o, images)
+			default:
+				return fmt.Errorf("Invalid output format %s, should be one of [text, json]", output)
 			}
-
-			log.Info("")
-
-			return nil
 		},
 	}
 
@@ -98,8 +86,66 @@ func RootCmd() *cobra.Command {
 	KubernetesConfigFlags.AddFlags(cmd.Flags())
 
 	cmd.Flags().StringSlice("ignore-ns", []string{}, "optional list of namespaces to exclude from searching")
+	cmd.Flags().String("output", "text", "Output format. One of: text|json")
 	viper.SetEnvKeyReplacer(strings.NewReplacer("-", "_"))
 	return cmd
+}
+
+func printInText(log *logger.Logger, o outdated.Outdated, images []outdated.RunningImage) error {
+	log.Info("")
+
+	head, imageColumnWidth, tagColumnWidth := headerLine(images)
+	log.Header(head)
+
+	for _, image := range images {
+		log.StartImageLine(runningImage(image, imageColumnWidth, tagColumnWidth))
+		checkResult, err := o.ParseImage(image.Image, image.PullableImage)
+		if err != nil {
+			log.FinalizeImageLineWithError(erroredImage(image, checkResult, imageColumnWidth, tagColumnWidth))
+		} else {
+			if checkResult.VersionsBehind != -1 {
+				log.FinalizeImageLine(checkResult.VersionsBehind, completedImage(image, checkResult, imageColumnWidth, tagColumnWidth))
+			} else {
+				log.FinalizeImageLineWithError(erroredImage(image, checkResult, imageColumnWidth, tagColumnWidth))
+			}
+		}
+	}
+
+	log.Info("")
+
+	return nil
+}
+
+func printInJSON(log *logger.Logger, o outdated.Outdated, images []outdated.RunningImage) error {
+	results := []logger.JSONResult{}
+
+	for _, image := range images {
+		repo, imgName, tag, err := outdated.ParseImageName(image.Image)
+		result := logger.JSONResult{
+			Repo:  repo,
+			Image: imgName,
+			Tag:   tag,
+		}
+		if err != nil {
+			return err
+		}
+
+		checkResult, err := o.ParseImage(image.Image, image.PullableImage)
+		if err != nil {
+			result.Error = &checkResult.CheckError
+		} else {
+			result.LatestVersion = checkResult.LatestVersion
+			result.VersionsBehind = checkResult.VersionsBehind
+		}
+		results = append(results, result)
+	}
+
+	d, err := json.Marshal(results)
+	if err != nil {
+		return err
+	}
+	log.Info(string(d))
+	return nil
 }
 
 func InitAndExecute() {
