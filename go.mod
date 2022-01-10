@@ -5,9 +5,8 @@ go 1.15
 require (
 	github.com/docker/docker v1.13.1
 	github.com/evanphx/json-patch v4.5.0+incompatible // indirect
-	github.com/fatih/color v1.7.0
+	github.com/fatih/color v1.13.0
 	github.com/genuinetools/reg v0.16.1
-	github.com/google/gofuzz v1.0.0 // indirect
 	github.com/googleapis/gnostic v0.3.1 // indirect
 	github.com/gophercloud/gophercloud v0.16.0 // indirect
 	github.com/hashicorp/go-version v1.1.0
@@ -15,11 +14,10 @@ require (
 	github.com/minio/minio v0.0.0-20190813204106-bf9b619d8656
 	github.com/peterbourgon/diskv v2.0.1+incompatible // indirect
 	github.com/pkg/errors v0.8.1
-	github.com/spf13/cobra v0.0.4
-	github.com/spf13/viper v1.4.0
-	github.com/stretchr/testify v1.3.0
+	github.com/spf13/cobra v1.3.0
+	github.com/spf13/viper v1.10.0
+	github.com/stretchr/testify v1.7.0
 	github.com/tj/go-spin v1.1.0
-	golang.org/x/net v0.0.0-20190812203447-cdfb69ac37fc // indirect
 	k8s.io/api v0.0.0-20190313235455-40a48860b5ab // indirect
 	k8s.io/apimachinery v0.0.0-20190313205120-d7deff9243b1
 	k8s.io/cli-runtime v0.0.0-20190314001948-2899ed30580f
