@@ -3,7 +3,7 @@ module github.com/replicatedhq/outdated
 go 1.15
 
 require (
-	github.com/docker/docker v1.13.1
+	github.com/docker/docker v20.10.13+incompatible
 	github.com/evanphx/json-patch v4.5.0+incompatible // indirect
 	github.com/fatih/color v1.7.0
 	github.com/genuinetools/reg v0.16.1
@@ -14,12 +14,12 @@ require (
 	github.com/imdario/mergo v0.3.7 // indirect
 	github.com/minio/minio v0.0.0-20190813204106-bf9b619d8656
 	github.com/peterbourgon/diskv v2.0.1+incompatible // indirect
-	github.com/pkg/errors v0.8.1
+	github.com/pkg/errors v0.9.1
 	github.com/spf13/cobra v0.0.4
 	github.com/spf13/viper v1.4.0
 	github.com/stretchr/testify v1.3.0
 	github.com/tj/go-spin v1.1.0
-	golang.org/x/net v0.0.0-20190812203447-cdfb69ac37fc // indirect
+	gotest.tools/v3 v3.1.0 // indirect
 	k8s.io/api v0.0.0-20190313235455-40a48860b5ab // indirect
 	k8s.io/apimachinery v0.0.0-20190313205120-d7deff9243b1
 	k8s.io/cli-runtime v0.0.0-20190314001948-2899ed30580f
