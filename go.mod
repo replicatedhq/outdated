@@ -17,7 +17,7 @@ require (
 	github.com/pkg/errors v0.8.1
 	github.com/spf13/cobra v0.0.4
 	github.com/spf13/viper v1.4.0
-	github.com/stretchr/testify v1.3.0
+	github.com/stretchr/testify v1.8.0
 	github.com/tj/go-spin v1.1.0
 	golang.org/x/net v0.0.0-20190812203447-cdfb69ac37fc // indirect
 	k8s.io/api v0.0.0-20190313235455-40a48860b5ab // indirect
