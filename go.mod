@@ -15,7 +15,7 @@ require (
 	github.com/minio/minio v0.0.0-20190813204106-bf9b619d8656
 	github.com/peterbourgon/diskv v2.0.1+incompatible // indirect
 	github.com/pkg/errors v0.8.1
-	github.com/spf13/cobra v0.0.4
+	github.com/spf13/cobra v1.6.1
 	github.com/spf13/viper v1.4.0
 	github.com/stretchr/testify v1.3.0
 	github.com/tj/go-spin v1.1.0
