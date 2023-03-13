@@ -5,7 +5,7 @@ go 1.15
 require (
 	github.com/docker/docker v1.13.1
 	github.com/evanphx/json-patch v4.5.0+incompatible // indirect
-	github.com/fatih/color v1.7.0
+	github.com/fatih/color v1.15.0
 	github.com/genuinetools/reg v0.16.1
 	github.com/google/gofuzz v1.0.0 // indirect
 	github.com/googleapis/gnostic v0.3.1 // indirect
