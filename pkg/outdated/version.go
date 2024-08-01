@@ -154,6 +154,8 @@ func resolveTagDates(reg *registry.Registry, imageName string, sortedVersions []
 	var mux sync.Mutex
 	versionTags := make([]*VersionTag, 0)
 
+	var totalError error
+
 	wg.Add(len(sortedVersions))
 	for idx, version := range sortedVersions {
 		versionFromTag := version.Original()
@@ -166,6 +168,14 @@ func resolveTagDates(reg *registry.Registry, imageName string, sortedVersions []
 			date, err := getTagDate(reg, imageName, versionFromTag)
 			if err == nil {
 				versionTag.Date = date
+			} else {
+				mux.Lock()
+				if totalError == nil {
+					totalError = err
+				} else {
+					totalError = errors.Wrap(totalError, err.Error())
+				}
+				mux.Unlock()
 			}
 
 			mux.Lock()
@@ -178,7 +188,7 @@ func resolveTagDates(reg *registry.Registry, imageName string, sortedVersions []
 	}
 	wg.Wait()
 
-	return versionTags, nil
+	return versionTags, totalError
 }
 
 func getTagDate(reg *registry.Registry, imageName string, versionFromTag string) (string, error) {
