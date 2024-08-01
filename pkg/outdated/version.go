@@ -3,6 +3,7 @@ package outdated
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"sort"
 	"strconv"
 	"strings"
@@ -183,6 +184,7 @@ func resolveTagDates(reg *registry.Registry, imageName string, sortedVersions []
 func getTagDate(reg *registry.Registry, imageName string, versionFromTag string) (string, error) {
 	manifest, err := reg.ManifestV1(context.TODO(), imageName, versionFromTag)
 	if err != nil {
+		fmt.Printf("failed to get manifest for %s:%s: %v\n", imageName, versionFromTag, err)
 		return "", errors.Wrap(err, "unable to get manifest from image")
 	}
 	for _, history := range manifest.History {

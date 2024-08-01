@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/minio/minio/pkg/wildcard"
+	"github.com/minio/pkg/wildcard"
 	"github.com/pkg/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/cli-runtime/pkg/genericclioptions"
