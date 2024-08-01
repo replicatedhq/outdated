@@ -13,10 +13,7 @@ import (
 func makeVersions(versions []string) []*semver.Version {
 	allVersions := make([]*semver.Version, 0)
 	for _, version := range versions {
-		v, err := semver.NewVersion(version)
-		if err != nil {
-			continue
-		}
+		v, _ := semver.NewVersion(version)
 		allVersions = append(allVersions, v)
 	}
 	return allVersions
