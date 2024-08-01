@@ -3,6 +3,7 @@ package outdated
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"sort"
 	"strconv"
 	"strings"
@@ -153,6 +154,8 @@ func resolveTagDates(reg *registry.Registry, imageName string, sortedVersions []
 	var mux sync.Mutex
 	versionTags := make([]*VersionTag, 0)
 
+	var totalError error
+
 	wg.Add(len(sortedVersions))
 	for idx, version := range sortedVersions {
 		versionFromTag := version.Original()
@@ -165,6 +168,14 @@ func resolveTagDates(reg *registry.Registry, imageName string, sortedVersions []
 			date, err := getTagDate(reg, imageName, versionFromTag)
 			if err == nil {
 				versionTag.Date = date
+			} else {
+				mux.Lock()
+				if totalError == nil {
+					totalError = err
+				} else {
+					totalError = errors.Wrap(totalError, err.Error())
+				}
+				mux.Unlock()
 			}
 
 			mux.Lock()
@@ -177,12 +188,13 @@ func resolveTagDates(reg *registry.Registry, imageName string, sortedVersions []
 	}
 	wg.Wait()
 
-	return versionTags, nil
+	return versionTags, totalError
 }
 
 func getTagDate(reg *registry.Registry, imageName string, versionFromTag string) (string, error) {
 	manifest, err := reg.ManifestV1(context.TODO(), imageName, versionFromTag)
 	if err != nil {
+		fmt.Printf("failed to get manifest for %s:%s: %v\n", imageName, versionFromTag, err)
 		return "", errors.Wrap(err, "unable to get manifest from image")
 	}
 	for _, history := range manifest.History {

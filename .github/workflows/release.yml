@@ -14,9 +14,10 @@ jobs:
         with:
           fetch-depth: 0 # fetch full history for goreleaser changelog
 
-      - uses: actions/setup-go@v2.1.3
+      - name: Setup Go
+        uses: actions/setup-go@v5
         with:
-          go-version: "1.16.2"
+          go-version-file: go.mod
 
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v2.5.0
