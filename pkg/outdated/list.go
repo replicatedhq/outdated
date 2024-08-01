@@ -1,6 +1,7 @@
 package outdated
 
 import (
+	"context"
 	"fmt"
 	"strings"
 
@@ -20,7 +21,7 @@ type RunningImage struct {
 	PullableImage string
 }
 
-func (o Outdated) ListImages(configFlags *genericclioptions.ConfigFlags, imageNameCh chan string, ignoreNs []string) ([]RunningImage, error) {
+func (o Outdated) ListImages(ctx context.Context, configFlags *genericclioptions.ConfigFlags, imageNameCh chan string, ignoreNs []string) ([]RunningImage, error) {
 	config, err := configFlags.ToRESTConfig()
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to read kubeconfig")
@@ -31,7 +32,7 @@ func (o Outdated) ListImages(configFlags *genericclioptions.ConfigFlags, imageNa
 		return nil, errors.Wrap(err, "failed to create clientset")
 	}
 
-	namespaces, err := clientset.CoreV1().Namespaces().List(metav1.ListOptions{})
+	namespaces, err := clientset.CoreV1().Namespaces().List(ctx, metav1.ListOptions{})
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to list namespaces")
 	}
@@ -44,7 +45,7 @@ func (o Outdated) ListImages(configFlags *genericclioptions.ConfigFlags, imageNa
 
 		imageNameCh <- fmt.Sprintf("%s/", namespace.Name)
 
-		pods, err := clientset.CoreV1().Pods(namespace.Name).List(metav1.ListOptions{})
+		pods, err := clientset.CoreV1().Pods(namespace.Name).List(ctx, metav1.ListOptions{})
 		if err != nil {
 			return nil, errors.Wrap(err, "failed to list pods")
 		}
