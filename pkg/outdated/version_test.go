@@ -322,6 +322,7 @@ func TestResolveTagDates(t *testing.T) {
 		hostname  string
 		imageName string
 		versions  []string
+		wantError bool
 	}{
 		{
 			name:      "postgres",
@@ -331,9 +332,16 @@ func TestResolveTagDates(t *testing.T) {
 		},
 		{
 			name:      "tiller",
-			hostname:  "gcr.io",
+			hostname:  "gcr.io", // gcr.io no longer hosts kubernetes images
 			imageName: "kubernetes-helm/tiller",
 			versions:  []string{"v2.14.1"},
+			wantError: true,
+		},
+		{
+			name:      "replicated cmd",
+			hostname:  "quay.io",
+			imageName: "replicated/cmd",
+			versions:  []string{"1.2.0"},
 		},
 	}
 
@@ -347,7 +355,10 @@ func TestResolveTagDates(t *testing.T) {
 			req.NoError(err)
 
 			versionTags, err := resolveTagDates(reg, test.imageName, allVersions)
-			req.NoError(err)
+			if test.wantError {
+				req.Error(err)
+				return
+			}
 
 			for _, versionTag := range versionTags {
 				_, err = time.Parse(time.RFC3339, versionTag.Date)

@@ -60,7 +60,7 @@ func RootCmd() *cobra.Command {
 				finishedCh <- true
 			}()
 
-			images, err := o.ListImages(KubernetesConfigFlags, foundImageName, v.GetStringSlice("ignore-ns"))
+			images, err := o.ListImages(cmd.Context(), KubernetesConfigFlags, foundImageName, v.GetStringSlice("ignore-ns"))
 			if err != nil {
 				log.Error(err)
 				log.Info("")
