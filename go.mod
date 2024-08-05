@@ -8,7 +8,7 @@ require (
 	github.com/docker/docker v1.13.1
 	github.com/fatih/color v1.17.0
 	github.com/genuinetools/reg v0.16.1
-	github.com/hashicorp/go-version v1.1.0
+	github.com/hashicorp/go-version v1.7.0
 	github.com/minio/pkg v1.7.5
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/cobra v1.8.1
